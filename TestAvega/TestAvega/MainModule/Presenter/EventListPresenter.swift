@@ -30,6 +30,7 @@ class EventListPresenter: EventListPresenterProtocol {
     var currentPage = 1
     var perPage = 20
     var isNextLoading = false
+    var isRefreshing = false
     
     required init(view: EventListViewProtocol, networkService: NetworkService) {
         self.view = view
@@ -47,9 +48,9 @@ class EventListPresenter: EventListPresenterProtocol {
     }
     
     func refresh() {
+        isRefreshing = true
         currentPage = 1
         getEventList(page: currentPage)
-        events = []
     }
     
     func getEventList(page: Int) {
@@ -58,9 +59,14 @@ class EventListPresenter: EventListPresenterProtocol {
             DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
                 switch result {
                 case .success(let eventList):
-                    self.events.append(contentsOf: eventList.events)
+                    if self.isRefreshing {
+                        self.events = eventList.events
+                    } else  {
+                        self.events.append(contentsOf: eventList.events)
+                    }
                     self.totalEvents = eventList.count
                     self.isNextLoading = false
+                    self.isRefreshing = false
                     self.view?.presentEvents()
                 case .failure(let error):
                     self.view?.failure(error: error)
