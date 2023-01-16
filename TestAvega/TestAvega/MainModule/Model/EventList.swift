@@ -18,16 +18,19 @@ struct EventList: Codable {
     }
 }
 
-struct Event: Codable {
+struct Event: Codable, Hashable {
     let id: Int
     let title: String
     let images: [EventImage]
-//    let description: String
+    let description: String
     let dates: [EventDates]
-    
-    enum CodingKeys: String, CodingKey {
-        case id, title, images, dates
-//        case description = "resultDescription"
+
+    func hash(into hasher: inout Hasher) {
+      hasher.combine(id)
+    }
+
+    static func == (lhs: Event, rhs: Event) -> Bool {
+        lhs.id == rhs.id
     }
 }
 
@@ -36,6 +39,6 @@ struct EventImage: Codable {
 }
 
 struct EventDates: Codable {
-    let start: Int
-    let end: Int
+    let start: Double
+    let end: Double
 }

@@ -14,6 +14,14 @@ private enum LayoutConstant {
     static let itemsInRow: CGFloat = 2
 }
 
+typealias DataSource = UICollectionViewDiffableDataSource<Section, Event>
+typealias Snapshot = NSDiffableDataSourceSnapshot<Section, Event>
+
+
+enum Section {
+    case main
+}
+
 class EventListViewController: UIViewController {
     var presenter: EventListPresenterProtocol?
     var collectionView: UICollectionView = {
@@ -25,6 +33,7 @@ class EventListViewController: UIViewController {
     
     var refreshControl = UIRefreshControl()
     var loadingView: LoadingCollectionReusableView?
+    private lazy var dataSource = makeDataSource()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -39,12 +48,11 @@ class EventListViewController: UIViewController {
 extension EventListViewController: EventListViewProtocol {
     func presentEvents() {
         guard let events = presenter?.events else { return }
-        let images = events.map { $0.images }
-        let titles = events.map { $0.title }
-        print(images)
-        print(titles)
-        collectionView.reloadData()
+        let desc = events.map { $0.dates }
+        print(desc)
+        applySnapshot(animatingDifferences: false)
         refreshControl.endRefreshing()
+        loadingView?.activityIndicator.stopAnimating()
     }
     
     func failure(error: Error) {
@@ -60,11 +68,42 @@ extension EventListViewController {
         view.addSubview(collectionView)
         
         collectionView.delegate = self
-        collectionView.dataSource = self
         collectionView.register(EventCollectionViewCell.self, forCellWithReuseIdentifier: EventCollectionViewCell.identifier)
         collectionView.register(LoadingCollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: LoadingCollectionReusableView.identifier)
         
         setupRefreshControl()
+    }
+    
+    func makeDataSource() -> DataSource {
+        let dataSource = DataSource(
+            collectionView: collectionView,
+            cellProvider: { (collectionView, indexPath, event) ->
+                UICollectionViewCell? in
+                let cell = collectionView.dequeueReusableCell(
+                    withReuseIdentifier: EventCollectionViewCell.identifier,
+                    for: indexPath) as? EventCollectionViewCell
+                cell?.configure(with: event)
+                return cell
+            })
+        dataSource.supplementaryViewProvider = { collectionView, kind, indexPath in
+          guard kind == UICollectionView.elementKindSectionFooter else {
+            return nil
+          }
+          let loadingView = collectionView.dequeueReusableSupplementaryView(
+            ofKind: kind,
+            withReuseIdentifier: LoadingCollectionReusableView.identifier,
+            for: indexPath) as? LoadingCollectionReusableView
+            self.loadingView = loadingView
+          return loadingView
+        }
+        return dataSource
+    }
+    
+    func applySnapshot(animatingDifferences: Bool = true) {
+        var snapshot = Snapshot()
+        snapshot.appendSections([.main])
+        snapshot.appendItems(presenter?.events ?? [])
+        dataSource.apply(snapshot, animatingDifferences: animatingDifferences)
     }
     
     func setupRefreshControl() {
@@ -92,50 +131,16 @@ extension EventListViewController {
 
 extension EventListViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        if presenter?.isNextLoading ?? false {
+            loadingView?.activityIndicator.startAnimating()
+        }
         presenter?.loadNextPage(index: indexPath.row)
     }
     
-    
-    func collectionView(_ collectionView: UICollectionView, willDisplaySupplementaryView view: UICollectionReusableView, forElementKind elementKind: String, at indexPath: IndexPath) {
-        if elementKind == UICollectionView.elementKindSectionFooter {
-            self.loadingView?.activityIndicator.startAnimating()
-        }
-    }
-
-    func collectionView(_ collectionView: UICollectionView, didEndDisplayingSupplementaryView view: UICollectionReusableView, forElementOfKind elementKind: String, at indexPath: IndexPath) {
-        if elementKind == UICollectionView.elementKindSectionFooter {
-            self.loadingView?.activityIndicator.stopAnimating()
-        }
-    }
-    
-}
-
-extension EventListViewController: UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return presenter?.events.count ?? 0
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-//        if indexPath.row != (presenter?.events.count ?? 0) / 2 {
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: EventCollectionViewCell.identifier, for: indexPath) as? EventCollectionViewCell else { return UICollectionViewCell()}
-            cell.configure(with: presenter?.events[indexPath.row])
-            return cell
-//        } else {
-//            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: LoadingCollectionReusableView.identifier, for: indexPath) as? LoadingCollectionReusableView else { return UICollectionViewCell() }
-//            cell.activityIndicator.startAnimating()
-//            return cell
-//        }
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        if kind == UICollectionView.elementKindSectionFooter {
-            let aFooterView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: LoadingCollectionReusableView.identifier, for: indexPath) as? LoadingCollectionReusableView
-            aFooterView?.frame = CGRect(x: 0, y: 0, width: 200, height: 50)
-            loadingView = aFooterView
-            loadingView?.backgroundColor = UIColor.black
-            return aFooterView ?? UICollectionReusableView()
-        }
-        return UICollectionReusableView()
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let event = presenter!.events[indexPath.row]
+        let detailVC = ModuleBuilder.createEventDetailView(event: event)
+        navigationController?.pushViewController(detailVC, animated: true)
     }
     
 }
@@ -159,11 +164,7 @@ extension EventListViewController: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
-        if ((presenter?.isNextLoading) != nil) {
-            return CGSize.zero
-        } else {
-            return CGSize(width: collectionView.bounds.size.width, height: 55)
-        }
+            return CGSize(width: collectionView.bounds.size.width, height: 20)
     }
     
 }

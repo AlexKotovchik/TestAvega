@@ -10,6 +10,12 @@ import UIKit
 
 class EventCollectionViewCell: UICollectionViewCell {
     
+    private let cache: NSCache<NSNumber, UIImage> = {
+        let cache = NSCache<NSNumber, UIImage>()
+        cache.countLimit = 100
+        return cache
+    }()
+    
     var imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.clipsToBounds = true
@@ -37,6 +43,12 @@ class EventCollectionViewCell: UICollectionViewCell {
     
     override func layoutSubviews() {
         setupLayouts()
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        imageView.image = nil
+        label.text = nil
     }
     
     required init?(coder: NSCoder) {
@@ -72,24 +84,18 @@ class EventCollectionViewCell: UICollectionViewCell {
     
     func configure(with event: Event?) {
         guard let event = event else { return }
-        progressView.startAnimating()
-        DispatchQueue.global().async {
-            if let url = URL(string: event.images.first?.image ?? ""),
-               let data = try? Data(contentsOf: url),
-               let image = UIImage(data: data) {
-                DispatchQueue.main.async {
+        let eventID = NSNumber(value: event.id)
+        if let cachedImage = ImageCacher.shared.cache.object(forKey: eventID) {
+            imageView.image = cachedImage
+        } else {
+            progressView.startAnimating()
+            ImageCacher.shared.download(event: event) { image in
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                     self.imageView.image = image
-                    self.progressView.stopAnimating()
-                }
-            } else {
-                DispatchQueue.main.async {
-                    self.imageView.image = UIImage(named: "placeholder")
                     self.progressView.stopAnimating()
                 }
             }
         }
-        
-        
         label.text = event.title.firstUppercased
     }
     

@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E765ADF029757950001F7B93 /* EventDetailsPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E765ADEF29757950001F7B93 /* EventDetailsPresenter.swift */; };
+		E765ADF22975A018001F7B93 /* ImageCacher.swift in Sources */ = {isa = PBXBuildFile; fileRef = E765ADF12975A018001F7B93 /* ImageCacher.swift */; };
+		E765ADF42975C58E001F7B93 /* Double+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E765ADF32975C58E001F7B93 /* Double+Extensions.swift */; };
 		E76A7750296EDEF000ED5865 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E76A774F296EDEF000ED5865 /* AppDelegate.swift */; };
 		E76A7752296EDEF000ED5865 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E76A7751296EDEF000ED5865 /* SceneDelegate.swift */; };
 		E76A7754296EDEF000ED5865 /* EventListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E76A7753296EDEF000ED5865 /* EventListViewController.swift */; };
@@ -20,7 +23,7 @@
 		E76A7788296F363E00ED5865 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E76A7787296F363E00ED5865 /* NetworkService.swift */; };
 		E76A778A2970983100ED5865 /* EventListPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E76A77892970983000ED5865 /* EventListPresenter.swift */; };
 		E76A778C2970A2CB00ED5865 /* ModuleBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = E76A778B2970A2CB00ED5865 /* ModuleBuilder.swift */; };
-		E76A778E2970AB2000ED5865 /* detailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E76A778D2970AB2000ED5865 /* detailViewController.swift */; };
+		E76A778E2970AB2000ED5865 /* EventDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E76A778D2970AB2000ED5865 /* EventDetailsViewController.swift */; };
 		E76A77922970D27800ED5865 /* UICollectionReusableView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E76A77912970D27800ED5865 /* UICollectionReusableView+Extensions.swift */; };
 		E76A77942970D3FD00ED5865 /* EventCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E76A77932970D3FD00ED5865 /* EventCollectionViewCell.swift */; };
 		E76A77962971CD8A00ED5865 /* String+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E76A77952971CD8A00ED5865 /* String+Extensions.swift */; };
@@ -46,6 +49,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		E765ADEF29757950001F7B93 /* EventDetailsPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDetailsPresenter.swift; sourceTree = "<group>"; };
+		E765ADF12975A018001F7B93 /* ImageCacher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCacher.swift; sourceTree = "<group>"; };
+		E765ADF32975C58E001F7B93 /* Double+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Double+Extensions.swift"; sourceTree = "<group>"; };
 		E76A774C296EDEF000ED5865 /* TestAvega.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TestAvega.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E76A774F296EDEF000ED5865 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E76A7751296EDEF000ED5865 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -63,7 +69,7 @@
 		E76A7787296F363E00ED5865 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		E76A77892970983000ED5865 /* EventListPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventListPresenter.swift; sourceTree = "<group>"; };
 		E76A778B2970A2CB00ED5865 /* ModuleBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModuleBuilder.swift; sourceTree = "<group>"; };
-		E76A778D2970AB2000ED5865 /* detailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = detailViewController.swift; sourceTree = "<group>"; };
+		E76A778D2970AB2000ED5865 /* EventDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDetailsViewController.swift; sourceTree = "<group>"; };
 		E76A77912970D27800ED5865 /* UICollectionReusableView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UICollectionReusableView+Extensions.swift"; sourceTree = "<group>"; };
 		E76A77932970D3FD00ED5865 /* EventCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventCollectionViewCell.swift; sourceTree = "<group>"; };
 		E76A77952971CD8A00ED5865 /* String+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extensions.swift"; sourceTree = "<group>"; };
@@ -96,6 +102,31 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E765ADEB297576B7001F7B93 /* DetailsModule */ = {
+			isa = PBXGroup;
+			children = (
+				E765ADEE297576DC001F7B93 /* View */,
+				E765ADEC297576C6001F7B93 /* Presenter */,
+			);
+			path = DetailsModule;
+			sourceTree = "<group>";
+		};
+		E765ADEC297576C6001F7B93 /* Presenter */ = {
+			isa = PBXGroup;
+			children = (
+				E765ADEF29757950001F7B93 /* EventDetailsPresenter.swift */,
+			);
+			path = Presenter;
+			sourceTree = "<group>";
+		};
+		E765ADEE297576DC001F7B93 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				E76A778D2970AB2000ED5865 /* EventDetailsViewController.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
 		E76A7743296EDEF000ED5865 = {
 			isa = PBXGroup;
 			children = (
@@ -119,13 +150,13 @@
 		E76A774E296EDEF000ED5865 /* TestAvega */ = {
 			isa = PBXGroup;
 			children = (
+				E765ADEB297576B7001F7B93 /* DetailsModule */,
 				E76A77902970D25100ED5865 /* Extensions */,
 				E76A7785296F35B900ED5865 /* ServiceLayer */,
 				E76A777F296F2AF200ED5865 /* MainModule */,
 				E76A774F296EDEF000ED5865 /* AppDelegate.swift */,
 				E76A7751296EDEF000ED5865 /* SceneDelegate.swift */,
 				E76A778B2970A2CB00ED5865 /* ModuleBuilder.swift */,
-				E76A778D2970AB2000ED5865 /* detailViewController.swift */,
 				E76A7755296EDEF000ED5865 /* Main.storyboard */,
 				E76A7758296EDEF200ED5865 /* Assets.xcassets */,
 				E76A775A296EDEF200ED5865 /* LaunchScreen.storyboard */,
@@ -191,6 +222,7 @@
 			isa = PBXGroup;
 			children = (
 				E76A7787296F363E00ED5865 /* NetworkService.swift */,
+				E765ADF12975A018001F7B93 /* ImageCacher.swift */,
 			);
 			path = ServiceLayer;
 			sourceTree = "<group>";
@@ -200,6 +232,7 @@
 			children = (
 				E76A77912970D27800ED5865 /* UICollectionReusableView+Extensions.swift */,
 				E76A77952971CD8A00ED5865 /* String+Extensions.swift */,
+				E765ADF32975C58E001F7B93 /* Double+Extensions.swift */,
 				E76A77972972185300ED5865 /* URL+Extensions.swift */,
 			);
 			path = Extensions;
@@ -338,16 +371,19 @@
 			files = (
 				E76A7788296F363E00ED5865 /* NetworkService.swift in Sources */,
 				E76A77982972185300ED5865 /* URL+Extensions.swift in Sources */,
+				E765ADF22975A018001F7B93 /* ImageCacher.swift in Sources */,
+				E765ADF029757950001F7B93 /* EventDetailsPresenter.swift in Sources */,
 				E76A77962971CD8A00ED5865 /* String+Extensions.swift in Sources */,
 				E76A77942970D3FD00ED5865 /* EventCollectionViewCell.swift in Sources */,
 				E76A7784296F33CB00ED5865 /* EventList.swift in Sources */,
 				E76A7754296EDEF000ED5865 /* EventListViewController.swift in Sources */,
+				E765ADF42975C58E001F7B93 /* Double+Extensions.swift in Sources */,
 				E76A7750296EDEF000ED5865 /* AppDelegate.swift in Sources */,
 				E76A77922970D27800ED5865 /* UICollectionReusableView+Extensions.swift in Sources */,
 				E76A778C2970A2CB00ED5865 /* ModuleBuilder.swift in Sources */,
 				E76A7752296EDEF000ED5865 /* SceneDelegate.swift in Sources */,
 				E76A778A2970983100ED5865 /* EventListPresenter.swift in Sources */,
-				E76A778E2970AB2000ED5865 /* detailViewController.swift in Sources */,
+				E76A778E2970AB2000ED5865 /* EventDetailsViewController.swift in Sources */,
 				E76A779A29722EA800ED5865 /* LoadingCollectionReusableView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

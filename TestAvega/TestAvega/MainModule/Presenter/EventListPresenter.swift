@@ -13,7 +13,7 @@ protocol EventListViewProtocol: AnyObject {
 }
 
 protocol EventListPresenterProtocol: AnyObject {
-    init(view: EventListViewProtocol, networkService: NetworkService)
+    init(view: EventListViewProtocol, networkService: NetworkServiceProtocol)
     var events: [Event] { get set }
     var isNextLoading: Bool { get set }
     func getEventList(page: Int)
@@ -23,7 +23,7 @@ protocol EventListPresenterProtocol: AnyObject {
 
 class EventListPresenter: EventListPresenterProtocol {
     weak var view: EventListViewProtocol?
-    let networkService: NetworkService
+    let networkService: NetworkServiceProtocol
     var events = [Event]()
     
     var totalEvents = 0
@@ -32,7 +32,7 @@ class EventListPresenter: EventListPresenterProtocol {
     var isNextLoading = false
     var isRefreshing = false
     
-    required init(view: EventListViewProtocol, networkService: NetworkService) {
+    required init(view: EventListViewProtocol, networkService: NetworkServiceProtocol) {
         self.view = view
         self.networkService = networkService
         getEventList(page: currentPage)

@@ -26,7 +26,7 @@ class NetworkService: NetworkServiceProtocol {
     }
     func getEventsList(page: String, completion: @escaping (Result<EventList, Error>) -> Void) {
         let parameters: JSONDict = ["location":"kzn",
-                                    "fields":"id,title,images,dates",
+                                    "fields":"id,title,images,dates,description",
                                     "page_size":"20",
                                     "page":page
         ]
