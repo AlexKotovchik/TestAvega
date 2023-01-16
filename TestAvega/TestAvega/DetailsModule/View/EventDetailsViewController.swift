@@ -12,11 +12,14 @@ class EventDetailsViewController: UIViewController {
     
     let contentView = UIView()
     
-    var imageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.clipsToBounds = true
-        imageView.contentMode = .scaleAspectFill
-        return imageView
+    var collectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.itemSize = CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.width)
+        layout.minimumLineSpacing = 0
+        layout.minimumInteritemSpacing = 0
+        layout.scrollDirection = .horizontal
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        return collectionView
     }()
     
     var titleLabel: UILabel = {
@@ -48,6 +51,7 @@ class EventDetailsViewController: UIViewController {
         view.backgroundColor = .systemBackground
         setupScrollView()
         setupLayouts()
+        setupCollectionView()
         presenter.setEvent()
     }
     
@@ -63,7 +67,6 @@ extension EventDetailsViewController: EventDetailsViewProtocol {
         if let date = event.dates.first {
             dateLabel.text = date.start.convertToDate() + " - " + date.end.convertToDate()
         }
-        imageView.image = UIImage(named: "placeholder") ?? UIImage()
     }
 }
 
@@ -91,9 +94,18 @@ extension EventDetailsViewController {
         ])
     }
     
+    func setupCollectionView() {
+        collectionView.backgroundColor = .clear
+        collectionView.isPagingEnabled = true
+        contentView.addSubview(collectionView)
+        
+        collectionView.dataSource = self
+        collectionView.register(EventImageCollectionViewCell.self, forCellWithReuseIdentifier: EventImageCollectionViewCell.identifier)
+    }
+    
     func setupLayouts() {
         contentView.addSubview(titleLabel)
-        contentView.addSubview(imageView)
+        contentView.addSubview(collectionView)
         contentView.addSubview(dateLabel)
         contentView.addSubview(descriptionLabel)
         
@@ -104,18 +116,18 @@ extension EventDetailsViewController {
             titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8)
         ])
         
-        imageView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            imageView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 8),
-            imageView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width),
-            imageView.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.width)
+            collectionView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 8),
+            collectionView.widthAnchor.constraint(equalToConstant: view.frame.width),
+            collectionView.heightAnchor.constraint(equalToConstant: view.frame.width)
         ])
         
         dateLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             dateLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -8),
             dateLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8),
-            dateLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 12)
+            dateLabel.topAnchor.constraint(equalTo: collectionView.bottomAnchor, constant: 12)
         ])
         
         descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -128,4 +140,18 @@ extension EventDetailsViewController {
         
     }
     
+}
+
+extension EventDetailsViewController: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        presenter.event.images.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: EventImageCollectionViewCell.identifier, for: indexPath) as! EventImageCollectionViewCell
+
+        let url = presenter.event.images[indexPath.row].image
+        cell.configure(with: url)
+        return cell
+    }
 }

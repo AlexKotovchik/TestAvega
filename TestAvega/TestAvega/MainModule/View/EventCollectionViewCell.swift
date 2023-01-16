@@ -9,15 +9,8 @@ import Foundation
 import UIKit
 
 class EventCollectionViewCell: UICollectionViewCell {
-    
-    private let cache: NSCache<NSNumber, UIImage> = {
-        let cache = NSCache<NSNumber, UIImage>()
-        cache.countLimit = 100
-        return cache
-    }()
-    
-    var imageView: UIImageView = {
-        let imageView = UIImageView()
+    var imageView: LoadingImageView = {
+        let imageView = LoadingImageView()
         imageView.clipsToBounds = true
         imageView.contentMode = .scaleAspectFill
         return imageView
@@ -29,12 +22,6 @@ class EventCollectionViewCell: UICollectionViewCell {
         label.font = label.font.withSize(10)
         label.numberOfLines = 5
         return label
-    }()
-    
-    var progressView: UIActivityIndicatorView = {
-        let spinner = UIActivityIndicatorView(style: .medium)
-        spinner.stopAnimating()
-        return spinner
     }()
     
     override init(frame: CGRect) {
@@ -58,19 +45,12 @@ class EventCollectionViewCell: UICollectionViewCell {
     func setupLayouts() {
         contentView.addSubview(imageView)
         contentView.addSubview(label)
-        contentView.addSubview(progressView)
         
         imageView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             imageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 4),
             imageView.widthAnchor.constraint(equalToConstant: contentView.frame.width),
             imageView.heightAnchor.constraint(equalToConstant: contentView.frame.width)
-        ])
-        
-        progressView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            progressView.centerXAnchor.constraint(equalTo: imageView.centerXAnchor),
-            progressView.centerYAnchor.constraint(equalTo: imageView.centerYAnchor)
         ])
         
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -84,20 +64,46 @@ class EventCollectionViewCell: UICollectionViewCell {
     
     func configure(with event: Event?) {
         guard let event = event else { return }
-        let eventID = NSNumber(value: event.id)
-        if let cachedImage = ImageCacher.shared.cache.object(forKey: eventID) {
-            imageView.image = cachedImage
-        } else {
-            progressView.startAnimating()
-            ImageCacher.shared.download(event: event) { image in
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                    self.imageView.image = image
-                    self.progressView.stopAnimating()
-                }
-            }
-        }
+        let imageUrl = event.images.first?.image ?? ""
+        imageView.configure(with: imageUrl)
         label.text = event.title.firstUppercased
     }
     
 }
 
+class LoadingImageView: UIImageView {
+    var progressView: UIActivityIndicatorView = {
+        let spinner = UIActivityIndicatorView(style: .medium)
+        spinner.stopAnimating()
+        return spinner
+    }()
+    
+    override func layoutSubviews() {
+        setupLayouts()
+    }
+    
+    func setupLayouts() {
+        self.addSubview(progressView)
+    
+        progressView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            progressView.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            progressView.centerYAnchor.constraint(equalTo: self.centerYAnchor)
+        ])
+    }
+    
+    func configure(with imageUrl: String) {
+        let nsUrl = NSString(string: imageUrl)
+        if let cachedImage = ImageCacher.shared.cache.object(forKey: nsUrl) {
+            self.image = cachedImage
+        } else {
+            progressView.startAnimating()
+            ImageCacher.shared.download(imageUrl: imageUrl) { image in
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                    self.image = image
+                    self.progressView.stopAnimating()
+                }
+            }
+        }
+    }
+}

@@ -13,6 +13,7 @@ protocol EventDetailsViewProtocol: AnyObject {
 
 protocol EventDetailsPresenterProtocol: AnyObject {
     init(view: EventDetailsViewProtocol, networkService: NetworkServiceProtocol, event: Event)
+    var event: Event { get }
     func setEvent()
 }
 

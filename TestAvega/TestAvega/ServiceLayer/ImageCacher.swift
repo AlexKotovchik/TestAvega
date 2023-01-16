@@ -11,26 +11,26 @@ import UIKit
 class ImageCacher {
     static var shared = ImageCacher()
     
-    let cache: NSCache<NSNumber, UIImage> = {
-        let cache = NSCache<NSNumber, UIImage>()
+    let cache: NSCache<NSString, UIImage> = {
+        let cache = NSCache<NSString, UIImage>()
         cache.countLimit = 100
         return cache
     }()
     
-    func download(event: Event, completion: @escaping (UIImage) -> Void) {
-        let eventID = NSNumber(value: event.id)
-        //        if let cachedImage = cache.object(forKey: eventID) {
-        //            completion(cachedImage)
-        //        } else {
+    func download(imageUrl: String, completion: @escaping (UIImage) -> Void) {
+        let nsUrl = NSString(string: imageUrl)
+//                if let cachedImage = cache.object(forKey: eventID) {
+//                    completion(cachedImage)
+//                } else {
         DispatchQueue.global().async {
-            if let url = URL(string: event.images.first?.image ?? ""),
+            if let url = URL(string: imageUrl),
                let data = try? Data(contentsOf: url),
                let image = UIImage(data: data) {
-                self.cache.setObject(image, forKey: eventID)
+                self.cache.setObject(image, forKey: nsUrl)
                 completion(image)
             } else {
                 let placeholderImage = UIImage(named: "placeholder") ?? UIImage()
-                self.cache.setObject(placeholderImage, forKey: eventID)
+                self.cache.setObject(placeholderImage, forKey: nsUrl)
                 completion(placeholderImage)
             }
         }

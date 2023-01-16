@@ -10,6 +10,7 @@
 		E765ADF029757950001F7B93 /* EventDetailsPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E765ADEF29757950001F7B93 /* EventDetailsPresenter.swift */; };
 		E765ADF22975A018001F7B93 /* ImageCacher.swift in Sources */ = {isa = PBXBuildFile; fileRef = E765ADF12975A018001F7B93 /* ImageCacher.swift */; };
 		E765ADF42975C58E001F7B93 /* Double+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E765ADF32975C58E001F7B93 /* Double+Extensions.swift */; };
+		E765ADF62975D4BC001F7B93 /* EventImageCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E765ADF52975D4BC001F7B93 /* EventImageCollectionViewCell.swift */; };
 		E76A7750296EDEF000ED5865 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E76A774F296EDEF000ED5865 /* AppDelegate.swift */; };
 		E76A7752296EDEF000ED5865 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E76A7751296EDEF000ED5865 /* SceneDelegate.swift */; };
 		E76A7754296EDEF000ED5865 /* EventListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E76A7753296EDEF000ED5865 /* EventListViewController.swift */; };
@@ -52,6 +53,7 @@
 		E765ADEF29757950001F7B93 /* EventDetailsPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDetailsPresenter.swift; sourceTree = "<group>"; };
 		E765ADF12975A018001F7B93 /* ImageCacher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCacher.swift; sourceTree = "<group>"; };
 		E765ADF32975C58E001F7B93 /* Double+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Double+Extensions.swift"; sourceTree = "<group>"; };
+		E765ADF52975D4BC001F7B93 /* EventImageCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventImageCollectionViewCell.swift; sourceTree = "<group>"; };
 		E76A774C296EDEF000ED5865 /* TestAvega.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TestAvega.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E76A774F296EDEF000ED5865 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E76A7751296EDEF000ED5865 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -123,6 +125,7 @@
 			isa = PBXGroup;
 			children = (
 				E76A778D2970AB2000ED5865 /* EventDetailsViewController.swift */,
+				E765ADF52975D4BC001F7B93 /* EventImageCollectionViewCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -383,6 +386,7 @@
 				E76A778C2970A2CB00ED5865 /* ModuleBuilder.swift in Sources */,
 				E76A7752296EDEF000ED5865 /* SceneDelegate.swift in Sources */,
 				E76A778A2970983100ED5865 /* EventListPresenter.swift in Sources */,
+				E765ADF62975D4BC001F7B93 /* EventImageCollectionViewCell.swift in Sources */,
 				E76A778E2970AB2000ED5865 /* EventDetailsViewController.swift in Sources */,
 				E76A779A29722EA800ED5865 /* LoadingCollectionReusableView.swift in Sources */,
 			);
