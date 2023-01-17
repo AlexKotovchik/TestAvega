@@ -40,7 +40,7 @@ class EventDetailsViewController: UIViewController {
     
     var descriptionLabel: UILabel = {
         let label = UILabel()
-        label.textAlignment = .left
+        label.textAlignment = .center
         label.font = label.font.withSize(24)
         label.numberOfLines = 0
         return label
@@ -97,6 +97,7 @@ extension EventDetailsViewController {
     func setupCollectionView() {
         collectionView.backgroundColor = .clear
         collectionView.isPagingEnabled = true
+        collectionView.showsHorizontalScrollIndicator = false
         contentView.addSubview(collectionView)
         
         collectionView.dataSource = self
@@ -144,13 +145,15 @@ extension EventDetailsViewController {
 
 extension EventDetailsViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        presenter.event.images.count
+//        presenter.event.images.count
+        return 5 // for test
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: EventImageCollectionViewCell.identifier, for: indexPath) as! EventImageCollectionViewCell
 
-        let url = presenter.event.images[indexPath.row].image
+//        let url = presenter.event.images[safe: indexPath.row]?.image ?? ""
+        let url = "https://picsum.photos/id/\(indexPath.row)/200/300" // for test
         cell.configure(with: url)
         return cell
     }

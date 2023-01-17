@@ -17,13 +17,12 @@ private enum LayoutConstant {
 typealias DataSource = UICollectionViewDiffableDataSource<Section, Event>
 typealias Snapshot = NSDiffableDataSourceSnapshot<Section, Event>
 
-
 enum Section {
     case main
 }
 
 class EventListViewController: UIViewController {
-    var presenter: EventListPresenterProtocol?
+    var presenter: EventListPresenterProtocol!
     var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
@@ -38,7 +37,7 @@ class EventListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        title = "Kazan"
+        title = "Казань"
         setupCollectionView()
         setupLayouts()
     }
@@ -47,19 +46,18 @@ class EventListViewController: UIViewController {
 
 extension EventListViewController: EventListViewProtocol {
     func presentEvents() {
-        guard let events = presenter?.events else { return }
-        let desc = events.map { $0.dates }
-        print(desc)
         applySnapshot(animatingDifferences: false)
         refreshControl.endRefreshing()
         loadingView?.activityIndicator.stopAnimating()
     }
     
     func failure(error: Error) {
-        
+        showAlert(message: error.localizedDescription)
     }
     
-    
+    func showNextLoading() {
+        loadingView?.activityIndicator.startAnimating()
+    }
 }
 
 extension EventListViewController {
@@ -82,7 +80,7 @@ extension EventListViewController {
                 let cell = collectionView.dequeueReusableCell(
                     withReuseIdentifier: EventCollectionViewCell.identifier,
                     for: indexPath) as? EventCollectionViewCell
-                cell?.configure(with: event)
+                cell?.configure(with: event, index: indexPath.row)
                 return cell
             })
         dataSource.supplementaryViewProvider = { collectionView, kind, indexPath in
@@ -102,7 +100,7 @@ extension EventListViewController {
     func applySnapshot(animatingDifferences: Bool = true) {
         var snapshot = Snapshot()
         snapshot.appendSections([.main])
-        snapshot.appendItems(presenter?.events ?? [])
+        snapshot.appendItems(presenter.events)
         dataSource.apply(snapshot, animatingDifferences: animatingDifferences)
     }
     
@@ -126,19 +124,20 @@ extension EventListViewController {
         presenter?.refresh()
     }
     
-    
+    func showAlert(message: String) {
+        let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
+    }
 }
 
 extension EventListViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        if presenter?.isNextLoading ?? false {
-            loadingView?.activityIndicator.startAnimating()
-        }
-        presenter?.loadNextPage(index: indexPath.row)
+        presenter.loadNextPage(index: indexPath.row)
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let event = presenter!.events[indexPath.row]
+        let event = presenter.events[indexPath.row]
         let detailVC = ModuleBuilder.createEventDetailView(event: event)
         navigationController?.pushViewController(detailVC, animated: true)
     }

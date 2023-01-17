@@ -9,6 +9,7 @@ import Foundation
 
 protocol EventListViewProtocol: AnyObject {
     func presentEvents()
+    func showNextLoading()
     func failure(error: Error)
 }
 
@@ -43,6 +44,7 @@ class EventListPresenter: EventListPresenterProtocol {
         guard totalEvents > events.count else { return }
         guard isNextLoading == false else { return }
         isNextLoading = true
+        view?.showNextLoading()
         currentPage += 1
         getEventList(page: currentPage)
     }
@@ -56,7 +58,7 @@ class EventListPresenter: EventListPresenterProtocol {
     func getEventList(page: Int) {
         networkService.getEventsList(page: String(page)) { [weak self] result in
             guard let self = self else { return }
-            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 switch result {
                 case .success(let eventList):
                     if self.isRefreshing {

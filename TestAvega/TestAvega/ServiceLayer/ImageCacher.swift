@@ -19,21 +19,25 @@ class ImageCacher {
     
     func download(imageUrl: String, completion: @escaping (UIImage) -> Void) {
         let nsUrl = NSString(string: imageUrl)
-//                if let cachedImage = cache.object(forKey: eventID) {
-//                    completion(cachedImage)
-//                } else {
-        DispatchQueue.global().async {
-            if let url = URL(string: imageUrl),
-               let data = try? Data(contentsOf: url),
-               let image = UIImage(data: data) {
-                self.cache.setObject(image, forKey: nsUrl)
-                completion(image)
-            } else {
-                let placeholderImage = UIImage(named: "placeholder") ?? UIImage()
-                self.cache.setObject(placeholderImage, forKey: nsUrl)
-                completion(placeholderImage)
+        if let cachedImage = cache.object(forKey: nsUrl) {
+            completion(cachedImage)
+        } else {
+            DispatchQueue.global().async {
+                if let url = URL(string: imageUrl),
+                   let data = try? Data(contentsOf: url),
+                   let image = UIImage(data: data) {
+                    self.cache.setObject(image, forKey: nsUrl)
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        completion(image)
+                    }
+                } else {
+                    let placeholderImage = UIImage(named: "placeholder") ?? UIImage()
+                    self.cache.setObject(placeholderImage, forKey: nsUrl)
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                        completion(placeholderImage)
+                    }
+                }
             }
         }
-        //        }
     }
 }

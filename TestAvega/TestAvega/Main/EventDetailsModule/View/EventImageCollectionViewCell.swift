@@ -12,7 +12,7 @@ class EventImageCollectionViewCell: UICollectionViewCell {
     var imageView: LoadingImageView = {
         let imageView = LoadingImageView()
         imageView.clipsToBounds = true
-        imageView.contentMode = .scaleAspectFill
+        imageView.contentMode = .scaleAspectFit
         return imageView
     }()
     

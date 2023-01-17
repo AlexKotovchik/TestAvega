@@ -24,10 +24,6 @@ class EventCollectionViewCell: UICollectionViewCell {
         return label
     }()
     
-    override init(frame: CGRect) {
-        super.init(frame: .zero)
-    }
-    
     override func layoutSubviews() {
         setupLayouts()
     }
@@ -36,10 +32,6 @@ class EventCollectionViewCell: UICollectionViewCell {
         super.prepareForReuse()
         imageView.image = nil
         label.text = nil
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
     
     func setupLayouts() {
@@ -62,48 +54,12 @@ class EventCollectionViewCell: UICollectionViewCell {
         ])
     }
     
-    func configure(with event: Event?) {
+    func configure(with event: Event?, index: Int) {
         guard let event = event else { return }
-        let imageUrl = event.images.first?.image ?? ""
+//        let imageUrl = event.images.first?.image ?? ""
+        let imageUrl = "https://picsum.photos/id/\(index)/200/300"
         imageView.configure(with: imageUrl)
         label.text = event.title.firstUppercased
     }
     
-}
-
-class LoadingImageView: UIImageView {
-    var progressView: UIActivityIndicatorView = {
-        let spinner = UIActivityIndicatorView(style: .medium)
-        spinner.stopAnimating()
-        return spinner
-    }()
-    
-    override func layoutSubviews() {
-        setupLayouts()
-    }
-    
-    func setupLayouts() {
-        self.addSubview(progressView)
-    
-        progressView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            progressView.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-            progressView.centerYAnchor.constraint(equalTo: self.centerYAnchor)
-        ])
-    }
-    
-    func configure(with imageUrl: String) {
-        let nsUrl = NSString(string: imageUrl)
-        if let cachedImage = ImageCacher.shared.cache.object(forKey: nsUrl) {
-            self.image = cachedImage
-        } else {
-            progressView.startAnimating()
-            ImageCacher.shared.download(imageUrl: imageUrl) { image in
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                    self.image = image
-                    self.progressView.stopAnimating()
-                }
-            }
-        }
-    }
 }

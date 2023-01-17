@@ -22,7 +22,7 @@ enum NetworkError: Error {
 
 class NetworkService: NetworkServiceProtocol {
     private enum API {
-        static let events = "https://kudago.com/public-api/v1.4/events/?page=2&fields=id,title,images,dates&location=msk&page_size=100"
+        static let events = "https://kudago.com/public-api/v1.4/events/"
     }
     func getEventsList(page: String, completion: @escaping (Result<EventList, Error>) -> Void) {
         let parameters: JSONDict = ["location":"kzn",
@@ -53,6 +53,5 @@ class NetworkService: NetworkServiceProtocol {
         }
         task.resume()
     }
-    
-    
+
 }
