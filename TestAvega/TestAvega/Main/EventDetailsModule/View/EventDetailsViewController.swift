@@ -63,7 +63,7 @@ extension EventDetailsViewController: EventDetailsViewProtocol {
         descriptionLabel.text = String(event.description
             .firstUppercased
             .dropFirst(3)
-            .dropLast(4))
+            .dropLast(5))
         if let date = event.dates.first {
             dateLabel.text = date.start.convertToDate() + " - " + date.end.convertToDate()
         }

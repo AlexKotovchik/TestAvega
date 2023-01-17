@@ -57,7 +57,7 @@ class EventCollectionViewCell: UICollectionViewCell {
     func configure(with event: Event?, index: Int) {
         guard let event = event else { return }
 //        let imageUrl = event.images.first?.image ?? ""
-        let imageUrl = "https://picsum.photos/id/\(index)/200/300"
+        let imageUrl = "https://picsum.photos/id/\(index)/200/300" //test images
         imageView.configure(with: imageUrl)
         label.text = event.title.firstUppercased
     }

@@ -27,13 +27,13 @@ class ImageCacher {
                    let data = try? Data(contentsOf: url),
                    let image = UIImage(data: data) {
                     self.cache.setObject(image, forKey: nsUrl)
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { // delay for test
                         completion(image)
                     }
                 } else {
                     let placeholderImage = UIImage(named: "placeholder") ?? UIImage()
                     self.cache.setObject(placeholderImage, forKey: nsUrl)
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { // delay for test
                         completion(placeholderImage)
                     }
                 }

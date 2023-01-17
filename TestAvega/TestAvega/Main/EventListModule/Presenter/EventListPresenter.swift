@@ -20,7 +20,7 @@ protocol EventListPresenterProtocol: AnyObject {
     var isNextLoading: Bool { get set }
     func getEventList(page: Int)
     func refresh()
-    func loadNextPage(index: Int)
+    func loadNextPage()
 }
 
 class EventListPresenter: EventListPresenterProtocol {
@@ -41,8 +41,7 @@ class EventListPresenter: EventListPresenterProtocol {
         getEventList(page: currentPage)
     }
     
-    func loadNextPage(index: Int) {
-        guard index == events.count - 1 else { return }
+    func loadNextPage() {
         guard totalEvents > events.count else { return }
         guard isNextLoading == false else { return }
         isNextLoading = true
@@ -65,7 +64,7 @@ class EventListPresenter: EventListPresenterProtocol {
     func getEventList(page: Int) {
         networkService.getEventsList(page: String(page)) { [weak self] result in
             guard let self = self else { return }
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {  // delay for test
                 switch result {
                 case .success(let eventList):
                     if self.isRefreshing {
