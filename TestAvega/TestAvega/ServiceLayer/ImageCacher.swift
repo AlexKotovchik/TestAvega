@@ -13,7 +13,7 @@ class ImageCacher {
     
     let cache: NSCache<NSString, UIImage> = {
         let cache = NSCache<NSString, UIImage>()
-        cache.countLimit = 100
+        cache.countLimit = 200
         return cache
     }()
     

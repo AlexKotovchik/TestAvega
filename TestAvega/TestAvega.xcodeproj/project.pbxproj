@@ -174,8 +174,8 @@
 		E76A774E296EDEF000ED5865 /* TestAvega */ = {
 			isa = PBXGroup;
 			children = (
-				E765ADFA29760FCE001F7B93 /* CustomVIew */,
 				E765ADF729760B80001F7B93 /* Main */,
+				E765ADFA29760FCE001F7B93 /* CustomVIew */,
 				E76A77902970D25100ED5865 /* Extension */,
 				E76A7785296F35B900ED5865 /* ServiceLayer */,
 				E76A774F296EDEF000ED5865 /* AppDelegate.swift */,
