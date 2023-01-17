@@ -10,6 +10,7 @@ import Foundation
 protocol EventListViewProtocol: AnyObject {
     func presentEvents()
     func showNextLoading()
+    func showFirstLoading()
     func failure(error: Error)
 }
 
@@ -32,6 +33,7 @@ class EventListPresenter: EventListPresenterProtocol {
     var perPage = 20
     var isNextLoading = false
     var isRefreshing = false
+    var isFirstLoading = true
     
     required init(view: EventListViewProtocol, networkService: NetworkServiceProtocol) {
         self.view = view
@@ -55,10 +57,15 @@ class EventListPresenter: EventListPresenterProtocol {
         getEventList(page: currentPage)
     }
     
+    func firstLoading() {
+        view?.showFirstLoading()
+        getEventList(page: currentPage)
+    }
+    
     func getEventList(page: Int) {
         networkService.getEventsList(page: String(page)) { [weak self] result in
             guard let self = self else { return }
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                 switch result {
                 case .success(let eventList):
                     if self.isRefreshing {

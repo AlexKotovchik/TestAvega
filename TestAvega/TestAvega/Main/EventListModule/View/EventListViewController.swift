@@ -25,20 +25,25 @@ class EventListViewController: UIViewController {
     var presenter: EventListPresenterProtocol!
     var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
+        layout.minimumLineSpacing = LayoutConstant.lineSpacing
+        layout.minimumInteritemSpacing = LayoutConstant.interItemSpacing
         layout.scrollDirection = .vertical
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         return collectionView
     }()
     
     var refreshControl = UIRefreshControl()
+    var spinnerView = UIView()
+    var spinner = UIActivityIndicatorView()
     var loadingView: LoadingCollectionReusableView?
     private lazy var dataSource = makeDataSource()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        title = "Казань"
+        
         setupCollectionView()
+        setupActivityIndicator()
         setupLayouts()
     }
     
@@ -49,6 +54,7 @@ extension EventListViewController: EventListViewProtocol {
         applySnapshot(animatingDifferences: false)
         refreshControl.endRefreshing()
         loadingView?.activityIndicator.stopAnimating()
+        stopFirstLoading()
     }
     
     func failure(error: Error) {
@@ -57,6 +63,10 @@ extension EventListViewController: EventListViewProtocol {
     
     func showNextLoading() {
         loadingView?.activityIndicator.startAnimating()
+    }
+    
+    func showFirstLoading() {
+        spinnerView.isHidden = false
     }
 }
 
@@ -120,6 +130,34 @@ extension EventListViewController {
         ])
     }
     
+    func setupActivityIndicator() {
+        let spinnerView = UIView()
+        spinnerView.backgroundColor = .black.withAlphaComponent(0.2)
+        spinnerView.translatesAutoresizingMaskIntoConstraints = false
+     
+        let spinner = UIActivityIndicatorView(style: .large)
+        spinner.color = .white
+        spinner.startAnimating()
+        spinner.translatesAutoresizingMaskIntoConstraints = false
+        
+        spinnerView.addSubview(spinner)
+        view.addSubview(spinnerView)
+        
+        NSLayoutConstraint.activate([
+            spinnerView.topAnchor.constraint(equalTo: view.topAnchor),
+            spinnerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            spinnerView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            spinnerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            
+            spinner.topAnchor.constraint(equalTo: spinnerView.topAnchor),
+            spinner.trailingAnchor.constraint(equalTo: spinnerView.trailingAnchor),
+            spinner.bottomAnchor.constraint(equalTo: spinnerView.bottomAnchor),
+            spinner.leadingAnchor.constraint(equalTo: spinnerView.leadingAnchor),
+        ])
+        self.spinner = spinner
+        self.spinnerView = spinnerView
+    }
+    
     @objc func refreshList() {
         presenter?.refresh()
     }
@@ -128,6 +166,12 @@ extension EventListViewController {
         let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
         self.present(alert, animated: true, completion: nil)
+    }
+    
+    func stopFirstLoading() {
+        spinnerView.isHidden = true
+        spinner.stopAnimating()
+        navigationController?.navigationBar.topItem?.title = "Казань"
     }
 }
 
@@ -152,14 +196,6 @@ extension EventListViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         return UIEdgeInsets(top: LayoutConstant.sectionSpacing, left: LayoutConstant.sectionSpacing, bottom: LayoutConstant.sectionSpacing, right: LayoutConstant.sectionSpacing)
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return LayoutConstant.lineSpacing
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return LayoutConstant.interItemSpacing
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
